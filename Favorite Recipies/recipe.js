@@ -72,6 +72,16 @@ function addMeal(mealData,random=false){
     mealsEl.appendChild(meal);
 }
     
+function addMealLS(mealId){
+    const mealIds = getMealLS();
+    localStorage.setItem("mealIds",JSON.stringify([...mealIds,mealId]));
+}
+
+function getMealLS(){
+    const mealIds = JSON.parse(localStorage.getItem("mealIds"));
+    return mealIds === null ? []:mealIds
+}
+
 
 
 closePopupBtn.addEventListener('click',()=>{
@@ -79,4 +89,6 @@ closePopupBtn.addEventListener('click',()=>{
 })
 
 getMealsBySearch("Pizza");
+
+
 

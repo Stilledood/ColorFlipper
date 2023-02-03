@@ -31,18 +31,17 @@ async function fetchRandomMeal() {
     );
     const responseDate = await resp.json();
     const mealRecipe = responseDate.meals[0];
-
     addMeal(mealRecipe,true);
 }
 
-function addMeal(mealData,random){
+function addMeal(mealData,random=false){
     const meal = document.createElement("div");
     meal.classList.add("meal");
     meal.innerHTML =`
         <div class="meal-header">
             ${random ?`<span class="random">Random Recipe</span>`:""}
             <img src="${mealData.strMealThumb}" alt="${mealData.strMeal}"/>
-        </div
+        </div>
         <div class="meal-body">
             <h4>${mealData.strMeal}</h4>
             <button class ="fav-btn">
@@ -50,8 +49,26 @@ function addMeal(mealData,random){
             </button>
         </div>
     `;
+    
 
     const favBtn = meal.querySelector(".meal-body .fav-btn");
+    console.log(favBtn);
+   
+    favBtn.addEventListener("click",function() {
+        if (favBtn.classList.contains('active')){
+            removeMealLS(mealData.idMeal);
+            favBtn.classList.remove('active');
+        }else{
+            addMealLS(mealData.idMeal);
+            favBtn.classList.add('active')
+        }
+        fetchFavMeals();
+    });
+
+    meal.addEventListener('click',() =>{
+        showMealInfo(mealData);
+    });
+
     mealsEl.appendChild(meal);
 }
     

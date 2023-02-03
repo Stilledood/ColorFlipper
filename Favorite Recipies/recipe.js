@@ -82,6 +82,13 @@ function getMealLS(){
     return mealIds === null ? []:mealIds
 }
 
+function removeMealLS(mealId){
+    const mealIds = getMealLS();
+    localStorage.setItem("mealIds",JSON.stringify(mealIds.filter((id) => id !== mealId)));
+}
+
+
+
 
 
 closePopupBtn.addEventListener('click',()=>{

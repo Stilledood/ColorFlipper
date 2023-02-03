@@ -2,6 +2,28 @@ const searchBtn = document.getElementById("search");
 const mealInfoElement = document.getElementById("meal-info")
 const mealPopup = document.getElementById("meal-popup");
 const closePopupBtn = document.getElementById('close-popup');
+const searchBar = document.getElementById("search-term");
+const favoriteCOntainer = document.getElementById("fav-meals");
+const mealsEl = document.getElementById("meals");
+
+
+fetchRandomMeal();
+
+
+async function getMealById(id) {
+     const resp = await fetch("https://www.themealdb.com/api/json/v1/1/lookup.php?i="+id);
+     const responseData = await resp.json();
+     const meal = responseData.meals[0];
+     return meal;
+}
+
+async function getMealsBySearch(name) {
+    const resp = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?s="+name);
+    const respData = await resp.json();
+    const meals = respData.meals;
+    return meals;
+
+}
 
 async function fetchRandomMeal() {
     const resp = await fetch(
@@ -9,26 +31,35 @@ async function fetchRandomMeal() {
     );
     const responseDate = await resp.json();
     const mealRecipe = responseDate.meals[0];
-    console.log(mealRecipe);
-    mealInfoElement.innerHTML = "";
-    
-    const ingredients = [];
 
-    for (let i=1;i<20;i++){
-        if (mealRecipe['strIngredient'+i]){
-            ingredients.push(mealRecipe['strIngredient'+i])
-        }
-    }
-
-    console.log(ingredients);
-    const mealEl = document.createElement("div");
-    mealEl.innerHTML = `
-        <h1>${mealRecipe['strMeal']}</h1>`;
-    mealInfoElement.appendChild(mealEl);
-    mealPopup.classList.remove('hidden');
+    addMeal(mealRecipe,true);
 }
 
-searchBtn.addEventListener('click',fetchRandomMeal());
+function addMeal(mealData,random){
+    const meal = document.createElement("div");
+    meal.classList.add("meal");
+    meal.innerHTML =`
+        <div class="meal-header">
+            ${random ?`<span class="random">Random Recipe</span>`:""}
+            <img src="${mealData.strMealThumb}" alt="${mealData.strMeal}"/>
+        </div
+        <div class="meal-body">
+            <h4>${mealData.strMeal}</h4>
+            <button class ="fav-btn">
+                <i class="fas fa-heart"></i>
+            </button>
+        </div>
+    `;
+
+    const favBtn = meal.querySelector(".meal-body .fav-btn");
+    mealsEl.appendChild(meal);
+}
+    
+
+
 closePopupBtn.addEventListener('click',()=>{
     mealPopup.classList.add('hidden');
 })
+
+getMealsBySearch("Pizza");
+
